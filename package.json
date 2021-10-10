@@ -1,0 +1,10 @@
+{
+  "name": "redux-remove",
+  "version": "1.0.0",
+  "description": "A library to help you slowly replace Redux with React Context",
+  "main": "index.js",
+  "repository": "git@github.com:danbahrami/redux-remove.git",
+  "author": "danbahrami <dan.bahrami@googlemail.com>",
+  "license": "MIT",
+  "private": true
+}
