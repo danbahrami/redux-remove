@@ -105,4 +105,53 @@ describe("connect()", () => {
       expect(avatar).toHaveTextContent("Alex Higgins");
     });
   });
+
+  describe("when a mergeProps function is passed", () => {
+    it("overrides props based on mergeProps", () => {
+      const mapStateToProps = (state) => ({
+        name: `${state.user.forename} ${state.user.surname}`,
+      });
+
+      const mapDispatchToProps = (dispatch, ownProps) => ({
+        onEdit: () => {
+          dispatch(actions.setForename("Alex"));
+          dispatch(actions.setSurname("Higgins"));
+        },
+      });
+
+      const mergeProps = (stateProps, dispatchProps, ownProps) => ({
+        name: `Ms. ${stateProps.name}`,
+        ...dispatchProps,
+        color: ownProps.color,
+      });
+
+      const WrappedAvatar = connect(userManager)(
+        mapStateToProps,
+        mapDispatchToProps,
+        mergeProps
+      )(Avatar);
+
+      const { container, getByTestId, getByRole } = render(
+        <userManager.Provider>
+          <div>
+            <WrappedAvatar name="John" color="blue" size="45" />
+          </div>
+        </userManager.Provider>
+      );
+
+      let avatar = getByTestId("avatar");
+
+      expect(avatar).toHaveClass("color-blue");
+      expect(avatar).toHaveClass("size-undefined");
+      expect(avatar).toHaveTextContent("Ms. Susan Barnes");
+
+      userEvent.click(getByRole("button"));
+
+      avatar = getByTestId("avatar");
+
+      expect(avatar).toHaveClass("color-blue");
+      expect(avatar).toHaveClass("size-undefined");
+      expect(avatar).toHaveTextContent("Ms. Alex Higgins");
+    });
+  });
 });

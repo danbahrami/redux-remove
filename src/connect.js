@@ -1,6 +1,6 @@
 import React from "react";
 
-const getPropPipeline = (mapStateToProps, mapDispatchToProps) => {
+const getPropPipeline = (mapStateToProps, mapDispatchToProps, mergeProps) => {
   return (state, dispatch, ownProps) => {
     let finalProps = ownProps;
     let stateProps = {};
@@ -12,6 +12,10 @@ const getPropPipeline = (mapStateToProps, mapDispatchToProps) => {
 
     if (mapDispatchToProps) {
       dispatchProps = mapDispatchToProps(dispatch, ownProps);
+    }
+
+    if (mergeProps) {
+      return mergeProps(stateProps, dispatchProps, ownProps);
     }
 
     return {
@@ -37,7 +41,11 @@ const connect =
         state = { [manager.name]: state };
       }
 
-      const propPipeline = getPropPipeline(mapStateToProps, mapDispatchToProps);
+      const propPipeline = getPropPipeline(
+        mapStateToProps,
+        mapDispatchToProps,
+        mergeProps
+      );
 
       return <Component {...propPipeline(state, dispatch, props)} />;
     };
