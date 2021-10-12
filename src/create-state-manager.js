@@ -19,40 +19,24 @@ class MissingManagerError extends Error {
   }
 }
 
+const useContextOrThrow = (Context) => {
+  const context = React.useContext(Context);
+
+  if (!context) {
+    throw new MissingManagerError(name);
+  }
+
+  return context;
+};
+
 const createStateManager = (name, reducer, initialState) => {
   const Context = React.createContext();
 
   const Provider = createProvider(reducer, initialState, Context);
 
-  const useState = () => {
-    const context = React.useContext(Context);
-
-    if (!context) {
-      throw new MissingManagerError(name);
-    }
-
-    return context.state;
-  };
-
-  const useDispatch = () => {
-    const context = React.useContext(Context);
-
-    if (!context) {
-      throw new MissingManagerError(name);
-    }
-
-    return context.dispatch;
-  };
-
-  const useSelector = (fn) => {
-    const context = React.useContext(Context);
-
-    if (!context) {
-      throw new MissingManagerError(name);
-    }
-
-    return fn(context.state);
-  };
+  const useState = () => useContextOrThrow(Context).state;
+  const useDispatch = () => useContextOrThrow(Context).dispatch;
+  const useSelector = (fn) => fn(useContextOrThrow(Context).state);
 
   return {
     name,
