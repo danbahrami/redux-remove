@@ -1,17 +1,24 @@
 import React from "react";
 
-// const buildStateFromManager = manager => {
-//   if (!)
-// }
-const getPropPipeline = (mapStateToProps) => {
-  return (state, ownProps) => {
+const getPropPipeline = (mapStateToProps, mapDispatchToProps) => {
+  return (state, dispatch, ownProps) => {
     let finalProps = ownProps;
+    let stateProps = {};
+    let dispatchProps = {};
 
     if (mapStateToProps) {
-      finalProps = mapStateToProps(state, ownProps);
+      stateProps = mapStateToProps(state, ownProps);
     }
 
-    return finalProps;
+    if (mapDispatchToProps) {
+      dispatchProps = mapDispatchToProps(dispatch, ownProps);
+    }
+
+    return {
+      ...ownProps,
+      ...stateProps,
+      ...dispatchProps,
+    };
   };
 };
 
@@ -25,13 +32,14 @@ const connect =
   (Component) => {
     const WrappedComponent = (props) => {
       let state = manager.useState();
+      let dispatch = manager.useDispatch();
       if (state) {
         state = { [manager.name]: state };
       }
 
-      const propPipeline = getPropPipeline(mapStateToProps);
+      const propPipeline = getPropPipeline(mapStateToProps, mapDispatchToProps);
 
-      return <Component {...propPipeline(state, props)} />;
+      return <Component {...propPipeline(state, dispatch, props)} />;
     };
 
     return WrappedComponent;
