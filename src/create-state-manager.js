@@ -1,4 +1,5 @@
 import React from "react";
+import { MissingManagerError } from "./error";
 
 const createProvider =
   (reducer, initialState, context) =>
@@ -11,13 +12,6 @@ const createProvider =
       </context.Provider>
     );
   };
-
-class MissingManagerError extends Error {
-  constructor(name) {
-    const message = `No ${name} manager found in context. This is probably because the component is not wrapped in the correct state provider.`;
-    super(message);
-  }
-}
 
 const useContextOrThrow = (Context) => {
   const context = React.useContext(Context);
@@ -32,6 +26,7 @@ const useContextOrThrow = (Context) => {
 const createStateManager = (name, reducer, initialState) => {
   const Context = React.createContext();
 
+  const Consumer = Context.Consumer;
   const Provider = createProvider(reducer, initialState, Context);
 
   const useState = () => useContextOrThrow(Context).state;
@@ -41,6 +36,7 @@ const createStateManager = (name, reducer, initialState) => {
   return {
     name,
     Provider,
+    Consumer,
     useState,
     useDispatch,
     useSelector,
