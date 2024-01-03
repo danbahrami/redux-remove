@@ -1,42 +1,63 @@
 {
-  "name": "redux-remove",
-  "version": "1.0.0",
-  "description": "A library to help you slowly replace Redux with React Context",
-  "source": "src/index.js",
-  "main": "build/main.js",
-  "module": "build/module.js",
-  "files": [
-    "build"
-  ],
-  "repository": "git@github.com:danbahrami/redux-remove.git",
-  "author": "danbahrami <dan.bahrami@googlemail.com>",
-  "license": "MIT",
-  "private": true,
-  "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "watch": "rollup -c -w",
-    "build": "rollup -c"
-  },
-  "peerDependencies": {
-    "react": ">=16.8.0",
-    "react-dom": ">=16.8.0"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.15.8",
-    "@babel/preset-env": "^7.15.8",
-    "@babel/preset-react": "^7.14.5",
-    "@rollup/plugin-babel": "^5.3.0",
-    "@rollup/plugin-node-resolve": "^13.0.5",
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.3.0",
-    "@types/jest": "^27.0.2",
-    "jest": "^27.2.5",
-    "prettier": "^2.4.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "rollup": "^2.58.0",
-    "rollup-plugin-peer-deps-external": "^2.2.4"
-  }
+    "name": "redux-remove-ts",
+    "version": "0.1.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+        "prepare": "npm run build",
+        "preview": "vite preview",
+        "test": "vitest --silent=false"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/danbahrami/redux-remove.git"
+    },
+    "author": "Dan Bahrami <dan.bahrami@gmail.com>",
+    "keywords": [
+        "redux",
+        "react",
+        "redux-remove"
+    ],
+    "homepage": "https://github.com/danbahrami/redux-remove",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/danbahrami/redux-remove/issues"
+    },
+    "devDependencies": {
+        "@testing-library/jest-dom": "^6.1.5",
+        "@testing-library/react": "^14.1.2",
+        "@testing-library/user-event": "^14.5.1",
+        "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+        "@types/react": "^18.2.43",
+        "@types/react-dom": "^18.2.17",
+        "@typescript-eslint/eslint-plugin": "^6.14.0",
+        "@typescript-eslint/parser": "^6.14.0",
+        "@vitejs/plugin-react": "^4.2.1",
+        "eslint": "^8.55.0",
+        "eslint-plugin-react-hooks": "^4.6.0",
+        "eslint-plugin-react-refresh": "^0.4.5",
+        "jsdom": "^23.0.1",
+        "typescript": "^5.2.2",
+        "vite": "^5.0.8",
+        "vite-plugin-dts": "^3.6.4",
+        "vitest": "^1.1.0"
+    },
+    "peerDependencies": {
+        "react": ">16.8.0",
+        "react-dom": ">16.8.0"
+    },
+    "main": "./dist/lib.umd.js",
+    "module": "./dist/lib.es.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "exports": {
+        ".": {
+            "import": "./dist/lib.es.js",
+            "require": "./dist/lib.umd.js"
+        }
+    }
 }
