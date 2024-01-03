@@ -68,7 +68,7 @@ export type MapDispatchToProps<
     ownProps: TOwnProps,
 ) => TDispatchProps;
 
-export type MergeProps<TStateProps, TDispatchProps, TOwnProps, TMergedProps> = (
+export type MergeProps<TStateProps, TDispatchProps, TMergedProps, TOwnProps> = (
     stateProps: TStateProps,
     dispatchProps: TDispatchProps,
     ownProps: TOwnProps,
@@ -107,7 +107,7 @@ export interface ConnectEnhancerFactory<
     <TOwnProps = {}, TMergedProps = {}>(
         mapStateToProps: null | undefined,
         mapDispatchToProps: null | undefined,
-        mergeProps: MergeProps<undefined, undefined, TOwnProps, TMergedProps>,
+        mergeProps: MergeProps<undefined, undefined, TMergedProps, TOwnProps>,
     ): InferableComponentEnhancerWithProps<TMergedProps, TOwnProps>;
 
     /**
@@ -131,7 +131,7 @@ export interface ConnectEnhancerFactory<
     <TStateProps = {}, TOwnProps = {}, TMergedProps = {}>(
         mapStateToProps: MapStateToProps<TManagers, TStateProps, TOwnProps>,
         mapDispatchToProps: null | undefined,
-        mergeProps: MergeProps<TStateProps, undefined, TOwnProps, TMergedProps>,
+        mergeProps: MergeProps<TStateProps, undefined, TMergedProps, TOwnProps>,
     ): InferableComponentEnhancerWithProps<TMergedProps, TOwnProps>;
 
     /**
@@ -147,8 +147,8 @@ export interface ConnectEnhancerFactory<
         mergeProps: MergeProps<
             undefined,
             TDispatchProps,
-            TOwnProps,
-            TMergedProps
+            TMergedProps,
+            TOwnProps
         >,
     ): InferableComponentEnhancerWithProps<TMergedProps, TOwnProps>;
 
@@ -165,8 +165,8 @@ export interface ConnectEnhancerFactory<
         mergeProps: MergeProps<
             TStateProps,
             TDispatchProps,
-            TOwnProps,
-            TMergedProps
+            TMergedProps,
+            TOwnProps
         >,
     ): InferableComponentEnhancerWithProps<TMergedProps, TOwnProps>;
 }

@@ -1,8 +1,13 @@
 import connect from "./connect";
 import { createStateManager } from "./createStateManager";
 import { MissingManagerError } from "./error";
-import type { ProviderContext, StateManager } from "./types";
+import type {
+    CombinedDispatch,
+    CombinedState,
+    ProviderContext,
+    StateManager,
+} from "./types";
 
 export { createStateManager, MissingManagerError, connect };
 
-export type { ProviderContext, StateManager };
+export type { ProviderContext, StateManager, CombinedDispatch, CombinedState };

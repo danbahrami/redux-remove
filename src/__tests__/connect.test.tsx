@@ -4,6 +4,7 @@ import { render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, test, vi } from "vitest";
 import { connect, createStateManager } from "../lib";
+import { CombinedDispatch, CombinedState } from "../lib/types";
 import { actions, likesReducer, userReducer } from "./fixtures";
 
 type AvatarProps = {
@@ -117,21 +118,35 @@ describe("connect()", () => {
         test("it overrides props based on mergeProps", async () => {
             type OwnProps = Pick<AvatarProps, "color" | "size">;
 
+            const mapStateToProps = (
+                state: CombinedState<{ user: typeof userManager }>,
+            ) => ({
+                name: `${state.user.forename} ${state.user.surname}`,
+            });
+
+            const mapDispatchToProps = (
+                dispatch: CombinedDispatch<{ user: typeof userManager }>,
+            ) => ({
+                onEdit: () => {
+                    dispatch.user(actions.setForename("Alex"));
+                    dispatch.user(actions.setSurname("Higgins"));
+                },
+            });
+
+            const mergeProps = (
+                stateProps: ReturnType<typeof mapStateToProps>,
+                dispatchProps: ReturnType<typeof mapDispatchToProps>,
+                ownProps: OwnProps,
+            ) => ({
+                name: `Ms. ${stateProps.name}`,
+                ...dispatchProps,
+                color: ownProps.color,
+            });
+
             const WrappedAvatar = connect({ user: userManager })(
-                (state) => ({
-                    name: `${state.user.forename} ${state.user.surname}`,
-                }),
-                (dispatch) => ({
-                    onEdit: () => {
-                        dispatch.user(actions.setForename("Alex"));
-                        dispatch.user(actions.setSurname("Higgins"));
-                    },
-                }),
-                (stateProps, dispatchProps, ownProps: OwnProps) => ({
-                    name: `Ms. ${stateProps.name}`,
-                    ...dispatchProps,
-                    color: ownProps.color,
-                }),
+                mapStateToProps,
+                mapDispatchToProps,
+                mergeProps,
             )(Avatar);
 
             const { getByTestId, getByRole } = render(
