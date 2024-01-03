@@ -60,5 +60,9 @@
             "import": "./dist/lib.es.js",
             "require": "./dist/lib.umd.js"
         }
+    },
+    "np": {
+        "yarn": false,
+        "contents": "dist"
     }
 }
