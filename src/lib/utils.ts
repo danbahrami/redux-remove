@@ -52,8 +52,8 @@ export const getPropPipeline = <
     mergeProps?: MergeProps<
         TStateProps,
         TDispatchProps,
-        TOwnProps,
-        TMergedProps
+        TMergedProps,
+        TOwnProps
     >,
 ) => {
     return (

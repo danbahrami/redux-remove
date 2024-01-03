@@ -29,8 +29,8 @@ const connect =
         mergeProps?: MergeProps<
             TStateProps,
             TDispatchProps,
-            TOwnProps,
-            TMergedProps
+            TMergedProps,
+            TOwnProps
         >,
     ) =>
     (Component: ComponentType<TMergedProps>) => {
