@@ -106,10 +106,6 @@ import { connect } from "redux-remove";
 import { TeamPage } from "/components/TeamPage";
 import { userManager } from "/state-managers/user";
 
-const mapStateToProps = (state, ownProps) => ({
-    user: state.user,
-});
-
 const ConnectedTeamPage = connect({ user: userManager, teams: teamsManager })(
     (state) => ({
         userName: state.user.name,
@@ -163,7 +159,98 @@ const ConnectedTeamPage = connect({ user: userManager, teams: teamManager })(
 )(TeamPage);
 ```
 
+## TypeScript
+
+Redux Remove is written in TypeScript and types are inferred automatically from the definition of your reducers when using both hooks or the `connect()` HOC. However there are a few cases with `connect()` that require some manual typing.
+
+### Typing `ownProps`
+
+`ownProps` are the props that you need to pass manually into the wrapped component. By default they're the result of taking the base component props and removing all the keys that are returned from `mapStateToProps`, `mapDispatchToProps` and `mergeProps`.
+
+```ts
+type TeamPageProps = {
+    userName: string;
+    teams: Team[];
+    onLoad: () => void;
+}
+
+const TeamPage: React.FC<TeamPageProps> = (props) => { ... }
+
+const ConnectedTeamPage = connect({ user: userManager, teams: teamsManager })(
+    (state) => ({
+        userName: state.user.name,
+        teams: state.teams,
+    }),
+)(TeamPage);
+
+// Prop type of ConnectedTeamPage will be:
+// Omit<TeamPage, "userName" | "teams">
+// which equals { onLoad: () => void }
+```
+
+However, if any of your factory functions make use of the `ownProps` argument then you need to type `ownProps` manually.
+
+```ts
+type OwnProps = {
+    currentTeamId: string;
+};
+
+const ConnectedTeamPage = connect({ user: userManager, teams: teamsManager })(
+    (state, ownProps: OwnProps) => ({
+        userName: state.user.name,
+        teams: state.teams,
+        currentTeam: state.teams[ownProps.teamId],
+    }),
+)(TeamPage);
+```
+
+### defining connect params outside of `connect()`
+
+You may want to define your `mapStateToProps`, `mapDispatchToProps`, `mergeProps` functions as named functions and pass them into `connect()`. This is what that might look like:
+
+```ts
+import { CombinedDispatch, CombinedState, connect } from "redux-remove";
+import { TeamPage } from "/components/TeamPage";
+import { userManager } from "/state-managers/user";
+
+const managers = { user: userManager };
+
+type OwnProps = {
+    currentTeamId: string;
+};
+
+const mapStateToProps = (
+    state: CombinedState<typeof managers>,
+    ownProps: OwnProps,
+) => ({
+    userName: state.user.name,
+    teams: state.teams,
+    currentTeam: state.teams[ownProps.teamId],
+});
+
+const mapDispatchToProps = (
+    dispatch: CombinedDispatch<typeof managers>
+) => ({
+    onJoinTeam: (teamId: string) => dispatch.user(actions.joinTeam(teamId))
+})
+
+const mergeProps = (
+    stateProps: ReturnType<typeof mapStateToProps>,
+    dispatchProps: ReturnType<typeof mapDispatchToProps>,
+    ownProps: OwnProps,
+) => {
+    ...
+}
+
+const ConnectedTeamPage = connect(managers)(
+    mapStateToProps,
+    mapDispatchToProps,
+    mergeProps,
+)(TeamPage);
+```
+
 ## Roadmap
 
+-   Support object style `mapDispatchToProps`
 -   Support dispatch middleware like `redux-thunk`
 -   Performance testing
